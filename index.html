@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بسطها لي | المعلم الذكي</title>
+    <title>الكوتش | مدربك الشخصي</title>
     
-    <!-- Fonts: 'Tajawal' (Rounded/Friendly) & 'Amatic SC' (Handwritten style for English) -->
-    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Fonts: Cairo (Modern Arabic) + Chakra Petch (Futuristic Numbers) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Chakra+Petch:wght@500;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,46 +15,32 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Tajawal', 'sans-serif'],
-                        chalk: ['Amatic SC', 'cursive'],
+                        sans: ['Cairo', 'sans-serif'],
+                        mono: ['Chakra Petch', 'sans-serif'],
                     },
                     colors: {
-                        board: {
-                            green: '#2F4F4F', // Dark Slate Gray
-                            dark: '#1a3c3c',
-                            wood: '#8B4513',
-                            dust: '#ffffff20',
+                        neon: {
+                            DEFAULT: '#39FF14', // Neon Green
+                            dim: 'rgba(57, 255, 20, 0.1)',
+                            glow: 'rgba(57, 255, 20, 0.5)',
                         },
-                        chalk: {
-                            white: '#fcfcfc',
-                            yellow: '#f1c40f',
-                            pink: '#e84393',
-                            blue: '#74b9ff',
+                        dark: {
+                            bg: '#0a0a0a',
+                            panel: '#111111',
+                            border: '#222222',
                         }
                     },
-                    backgroundImage: {
-                        'chalk-texture': "url('https://www.transparenttextures.com/patterns/black-chalk.png')",
+                    boxShadow: {
+                        'neon': '0 0 10px rgba(57, 255, 20, 0.3), 0 0 20px rgba(57, 255, 20, 0.1)',
                     },
                     animation: {
-                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
-                        'dust-float': 'float 10s infinite linear',
-                        'write': 'write 0.5s ease-out forwards',
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
                     },
                     keyframes: {
-                        shake: {
-                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
-                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
-                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
-                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
-                        },
-                        float: {
-                            '0%': { transform: 'translateY(0) rotate(0deg)', opacity: 0 },
-                            '50%': { opacity: 0.5 },
-                            '100%': { transform: 'translateY(-100px) rotate(360deg)', opacity: 0 }
-                        },
-                        write: {
-                            '0%': { opacity: 0, width: '0%' },
-                            '100%': { opacity: 1, width: '100%' }
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: 0 },
+                            '100%': { transform: 'translateY(0)', opacity: 1 },
                         }
                     }
                 }
@@ -75,129 +61,129 @@
 
     <style>
         body {
-            background-color: #f0e6d2; /* Wall color */
-            background-image: radial-gradient(#dcd0b8 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-color: #050505;
+            color: #e5e5e5;
+            background-image: 
+                linear-gradient(rgba(20, 255, 20, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 255, 20, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Glitch Effect Text */
+        .glitch-text {
+            position: relative;
         }
         
-        /* Realistic Chalkboard Effect */
-        .chalkboard {
-            background-color: #1a3c3c;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
-            box-shadow: 
-                inset 0 0 20px 0 rgba(0,0,0,0.5),
-                inset 0 0 50px 0 rgba(255,255,255,0.05),
-                0 20px 50px rgba(0,0,0,0.5);
-            border: 16px solid #5d4037;
-            border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='%235d4037'/%3E%3Cpath d='M0 0h100v10H0zM0 90h100v10H0z' fill='%234e342e'/%3E%3C/svg%3E") 30 stretch;
-        }
-
-        .chalk-text {
-            font-family: 'Tajawal', sans-serif;
-            color: #fff;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-            /* Chalk roughness */
-            filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));
-        }
-
-        .eraser-dust {
-            position: absolute;
-            background: white;
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
             border-radius: 50%;
-            filter: blur(8px);
+            background: #39FF14;
+            cursor: pointer;
+            box-shadow: 0 0 10px #39FF14;
+            margin-top: -8px;
         }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #1a3c3c; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; border: 2px solid #1a3c3c; }
+        .custom-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #333;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel" data-type="module">
-        import React, { useState, useEffect, useRef } from 'react';
+        import React, { useState, useEffect } from 'react';
         import { createRoot } from 'react-dom/client';
         import { 
-            Lightbulb, Brain, Eraser, Settings, Key, X, 
-            Sparkles, GraduationCap, ArrowRight, Zap, Smile
+            Dumbbell, Flame, Utensils, Activity, Settings, Key, 
+            Zap, TrendingUp, Trophy, ChevronRight, CheckCircle2,
+            Scale, X
         } from 'lucide-react';
 
-        // --- Mock Data (Demo Mode) ---
-        const MOCK_EXPLANATIONS = [
-            {
-                title: "البلوك تشين (Blockchain)",
-                simple: "تخيل أن لدينا دفتر رسم كبير في الفصل، وكل طالب يرسم فيه رسمة. لكن، لا أحد يستطيع مسح رسمة أحد آخر! وكلما رسم طالب شيئاً، يراه الجميع ويوافقون عليه. البلوك تشين هو مثل هذا الدفتر، لكن للكمبيوترات، لكي لا يغش أحد في الأرقام.",
-                analogy: "دفتر الرسم السحري الذي لا يمسح"
-            },
-            {
-                title: "التضخم (Inflation)",
-                simple: "تخيل أن مصروفك اليومي هو 5 ريالات وتشتري به آيس كريم. فجأة، صار الآيس كريم بـ 10 ريالات! مصروفك لم يتغير، لكنك لم تعد تستطيع شراء الآيس كريم. هذا هو التضخم: المال يفقد قوته وتصبح الأشياء أغلى.",
-                analogy: "الآيس كريم الذي يصغر حجمه"
+        // --- Mock Data (Demo) ---
+        const MOCK_PLAN = {
+            summary: "خطة تضخيم عضلات (يوم دفع)",
+            calories: 2800,
+            protein: "180g",
+            workout: [
+                { name: "ضغط صدر مستوي (Bench Press)", reps: "4 مجموعات × 10 عدات" },
+                { name: "ضغط أكتاف بالدمبل", reps: "3 مجموعات × 12 عدة" },
+                { name: "تراي سيبس (Triceps Pushdown)", reps: "3 مجموعات × 15 عدة" },
+                { name: "رفرفة جانبي", reps: "3 مجموعات × 15 عدة" }
+            ],
+            diet: {
+                breakfast: "5 بياض بيض + شوفان بالحليب والموز",
+                lunch: "200 جرام صدور دجاج + أرز بني + سلطة خضراء",
+                snack: "سكوب بروتين + تفاحة",
+                dinner: "علبة تونة + بطاطس مسلوقة"
             }
-        ];
+        };
 
         function App() {
-            // Inputs
-            const [topic, setTopic] = useState('');
-            const [result, setResult] = useState(null);
-            
+            // User Stats
+            const [weight, setWeight] = useState(75);
+            const [goal, setGoal] = useState('muscle'); // muscle | weightloss | maintenance
+            const [place, setPlace] = useState('gym'); // gym | home
+            const [level, setLevel] = useState('intermediate'); // beginner | intermediate | advanced
+
             // System
-            const [isLoading, setIsLoading] = useState(false);
+            const [plan, setPlan] = useState(null);
+            const [loading, setLoading] = useState(false);
             const [showSettings, setShowSettings] = useState(false);
             const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
-            const [dustParticles, setDustParticles] = useState([]);
-
-            const resultRef = useRef(null);
+            const [progress, setProgress] = useState(0);
 
             const saveApiKey = (key) => {
                 setApiKey(key);
                 localStorage.setItem('gemini_api_key', key);
             };
 
-            const triggerDust = () => {
-                const newDust = Array.from({ length: 10 }).map((_, i) => ({
-                    id: Date.now() + i,
-                    left: Math.random() * 100 + '%',
-                    top: Math.random() * 100 + '%',
-                    delay: Math.random() * 2 + 's'
-                }));
-                setDustParticles(newDust);
-                setTimeout(() => setDustParticles([]), 2000);
-            };
+            const generatePlan = async () => {
+                setLoading(true);
+                setProgress(0);
+                setPlan(null);
 
-            const handleSimplify = async () => {
-                if (!topic.trim()) return;
-                setIsLoading(true);
-                setResult(null);
-                triggerDust();
+                // Fake Progress Bar Animation
+                const interval = setInterval(() => {
+                    setProgress(prev => Math.min(prev + 10, 90));
+                }, 300);
 
-                // Demo Mode
+                // Demo Mode Check
                 if (!apiKey) {
                     setTimeout(() => {
-                        const randomRes = MOCK_EXPLANATIONS[Math.floor(Math.random() * MOCK_EXPLANATIONS.length)];
-                        // Just forcing the title to match input for demo feel
-                        setResult({ ...randomRes, title: topic }); 
-                        setIsLoading(false);
+                        clearInterval(interval);
+                        setProgress(100);
+                        setPlan(MOCK_PLAN);
+                        setLoading(false);
                     }, 2500);
                     return;
                 }
 
                 // AI Prompt
-                const prompt = `اشرح لي موضوع "${topic}" وكأن عمري 5 سنوات.
+                const goalText = goal === 'muscle' ? 'بناء عضلات' : goal === 'weightloss' ? 'خسارة وزن' : 'لياقة عامة';
+                const placeText = place === 'gym' ? 'في الجيم (أجهزة متوفرة)' : 'في المنزل (بوزن الجسم)';
                 
-                التعليمات:
-                1. استخدم لغة عربية بسيطة جداً ومرحة.
-                2. استخدم تشبيهات من عالم الأطفال (ألعاب، حلويات، حيوانات، مدرسة).
-                3. كن مختصراً (فقرة واحدة أو اثنتين).
-                4. أعطني "عنوان التشبيه" في النهاية.
+                const prompt = `بصفتك مدرب لياقة بدنية محترف، قم بإنشاء خطة ليوم واحد.
+                المستخدم: وزنه ${weight} كجم، مستواه ${level}، يتدرب ${placeText}.
+                الهدف: ${goalText}.
 
-                صيغة JSON المطلوبة:
+                المخرجات المطلوبة JSON فقط:
                 {
-                    "title": "${topic}",
-                    "simple": "الشرح المبسط هنا...",
-                    "analogy": "عنوان التشبيه (مثلاً: البنك مثل الحصالة)"
+                    "summary": "ملخص سريع للخطة",
+                    "calories": "السعرات التقديرية (رقم)",
+                    "protein": "البروتين التقديري (مثلا 150g)",
+                    "workout": [{"name": "اسم التمرين", "reps": "العدات والمجموعات"}],
+                    "diet": {
+                        "breakfast": "الفطور",
+                        "lunch": "الغداء",
+                        "snack": "سناك",
+                        "dinner": "العشاء"
+                    }
                 }`;
 
                 try {
@@ -209,171 +195,256 @@
                             generationConfig: { responseMimeType: "application/json" }
                         })
                     });
+                    
                     const data = await response.json();
-                    const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
-                    setResult(parsed);
+                    const result = JSON.parse(data.candidates[0].content.parts[0].text);
+                    
+                    clearInterval(interval);
+                    setProgress(100);
+                    setPlan(result);
                 } catch (error) {
-                    setResult({
-                        title: topic,
-                        simple: "أعتذر يا صديقي الصغير! الطباشير انكسر ولم أستطع الكتابة. (تأكد من مفتاح API)",
-                        analogy: "القلم المكسور"
-                    });
+                    clearInterval(interval);
+                    setPlan(MOCK_PLAN); // Fallback
                 } finally {
-                    setIsLoading(false);
+                    setLoading(false);
                 }
             };
 
-            const clearBoard = () => {
-                setTopic('');
-                setResult(null);
-                triggerDust();
-            };
-
             return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
+                <div className="min-h-screen flex flex-col items-center p-4 lg:p-8 font-sans">
                     
+                    {/* Top Bar */}
+                    <div className="w-full max-w-5xl flex justify-between items-center mb-8 border-b border-dark-border pb-4">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-neon text-black p-2 rounded transform -skew-x-12">
+                                <Activity className="w-6 h-6 transform skew-x-12" />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-black tracking-tighter uppercase italic">الكوتش <span className="text-neon">PRO</span></h1>
+                            </div>
+                        </div>
+                        <button onClick={() => setShowSettings(true)} className="text-gray-400 hover:text-neon transition-colors">
+                            <Settings />
+                        </button>
+                    </div>
+
                     {/* Settings Modal */}
                     {showSettings && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-                            <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl relative border-4 border-board-wood transform rotate-1">
-                                <button onClick={() => setShowSettings(false)} className="absolute top-4 left-4 text-gray-400 hover:text-red-500"><X /></button>
-                                <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-board-wood">
-                                    <Key className="w-5 h-5" /> مفتاح المعلم
-                                </h3>
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+                            <div className="bg-dark-panel border border-dark-border p-6 rounded-2xl w-full max-w-md relative">
+                                <button onClick={() => setShowSettings(false)} className="absolute top-4 left-4 text-gray-500 hover:text-white"><X /></button>
+                                <h3 className="text-neon font-bold mb-4 flex items-center gap-2"><Key className="w-5 h-5" /> تفعيل الذكاء الاصطناعي</h3>
                                 <input 
                                     type="password" 
                                     value={apiKey}
                                     onChange={(e) => saveApiKey(e.target.value)}
-                                    className="w-full bg-gray-100 border-2 border-gray-300 rounded-lg p-3 outline-none focus:border-board-green mb-2 font-mono"
-                                    placeholder="API Key..."
+                                    placeholder="أدخل مفتاح API..."
+                                    className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white focus:border-neon outline-none"
                                 />
-                                <button onClick={() => setShowSettings(false)} className="mt-4 w-full bg-board-green text-white py-2 rounded-lg font-bold hover:bg-board-dark transition-colors">حفظ</button>
+                                <div className="mt-4 flex justify-end">
+                                    <button onClick={() => setShowSettings(false)} className="bg-neon text-black font-bold px-6 py-2 rounded hover:bg-green-400">حفظ</button>
+                                </div>
                             </div>
                         </div>
                     )}
 
-                    {/* Main Board Container */}
-                    <div className="chalkboard w-full max-w-4xl min-h-[600px] rounded-xl relative p-8 flex flex-col items-center">
+                    <div className="grid lg:grid-cols-12 gap-8 w-full max-w-6xl">
                         
-                        {/* Dust Particles */}
-                        {dustParticles.map(p => (
-                            <div key={p.id} className="eraser-dust w-20 h-20 opacity-20 animate-dust-float" style={{left: p.left, top: p.top}}></div>
-                        ))}
+                        {/* INPUT PANEL */}
+                        <div className="lg:col-span-4 space-y-6">
+                            <div className="bg-dark-panel border border-dark-border p-6 rounded-2xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-20 h-20 bg-neon/5 rounded-full blur-2xl group-hover:bg-neon/10 transition-all"></div>
+                                
+                                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                                    <Trophy className="text-neon w-5 h-5" /> بيانات اللاعب
+                                </h2>
 
-                        {/* Header written on board */}
-                        <div className="w-full flex justify-between items-start mb-8 border-b-2 border-dashed border-white/20 pb-4">
-                            <div>
-                                <h1 className="text-4xl md:text-5xl font-bold text-chalk-white font-chalk tracking-widest transform -rotate-2">
-                                    بسطها لي! <span className="text-chalk-yellow text-6xl">★</span>
-                                </h1>
-                                <p className="text-chalk-blue text-lg mt-2 font-chalk rotate-1 opacity-80">اشرح لي كأن عمري 5 سنوات</p>
-                            </div>
-                            <button onClick={() => setShowSettings(!showSettings)} className="text-white/30 hover:text-white transition-colors">
-                                <Settings className="w-8 h-8" />
-                            </button>
-                        </div>
-
-                        {/* Input Area (Paper pinned to board) */}
-                        <div className="bg-white w-full max-w-2xl p-1 rounded shadow-lg transform rotate-1 mb-8 relative group">
-                            {/* Pin */}
-                            <div className="absolute -top-3 left-1/2 w-4 h-4 rounded-full bg-red-500 shadow-md border border-red-700 z-10"></div>
-                            
-                            <div className="border-2 border-dashed border-gray-300 p-4 rounded bg-[#fffdf0]">
-                                <label className="block text-gray-500 font-bold mb-2 text-sm">ماذا تريد أن تفهم اليوم؟</label>
-                                <div className="flex gap-2">
+                                {/* Weight Slider */}
+                                <div className="mb-6">
+                                    <div className="flex justify-between mb-2">
+                                        <label className="text-gray-400 text-sm font-bold">الوزن الحالي</label>
+                                        <span className="text-neon font-mono text-xl font-bold">{weight} <span className="text-xs text-gray-500">KG</span></span>
+                                    </div>
                                     <input 
-                                        type="text" 
-                                        value={topic}
-                                        onChange={(e) => setTopic(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleSimplify()}
-                                        placeholder="مثلاً: الثقوب السوداء، الأسهم..."
-                                        className="flex-1 bg-transparent text-xl text-gray-800 outline-none placeholder-gray-300 font-bold"
+                                        type="range" 
+                                        min="40" max="150" 
+                                        value={weight} 
+                                        onChange={(e) => setWeight(e.target.value)}
+                                        className="w-full custom-range appearance-none h-1 bg-gray-700 rounded outline-none"
                                     />
-                                    {topic && (
-                                        <button onClick={() => setTopic('')} className="text-gray-400 hover:text-red-500"><X /></button>
-                                    )}
                                 </div>
-                            </div>
-                            
-                            <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 translate-x-full hidden md:block group-hover:scale-110 transition-transform">
-                                <ArrowRight className="text-chalk-white w-8 h-8 animate-bounce opacity-50" />
-                            </div>
-                        </div>
 
-                        {/* Action Buttons (Chalks/Eraser) */}
-                        <div className="flex gap-4 mb-10">
-                            <button 
-                                onClick={handleSimplify}
-                                disabled={isLoading || !topic}
-                                className={`
-                                    px-8 py-3 rounded-full font-bold text-xl flex items-center gap-2 transform transition-all border-2
-                                    ${isLoading 
-                                        ? 'bg-transparent text-white/50 border-white/20 cursor-wait' 
-                                        : 'bg-chalk-yellow text-board-dark border-transparent hover:-translate-y-1 hover:shadow-[0_10px_0_rgba(0,0,0,0.3)] active:translate-y-0 active:shadow-none'}
-                                `}
-                            >
-                                {isLoading ? <Sparkles className="animate-spin" /> : <Lightbulb className="w-6 h-6" />}
-                                <span>فهمني!</span>
-                            </button>
-
-                            <button 
-                                onClick={clearBoard}
-                                className="px-6 py-3 rounded-md bg-white text-gray-800 font-bold border-b-4 border-gray-300 hover:-translate-y-1 hover:border-gray-400 active:translate-y-0 active:border-gray-300 flex items-center gap-2 transform rotate-2"
-                                title="مسح السبورة"
-                            >
-                                <Eraser className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Result Area (Chalk Drawings) */}
-                        <div className="flex-1 w-full relative min-h-[300px] flex items-center justify-center">
-                            
-                            {isLoading && (
-                                <div className="text-center animate-pulse">
-                                    <Brain className="w-20 h-20 text-chalk-pink mx-auto mb-4 animate-bounce" />
-                                    <p className="text-chalk-white text-2xl font-chalk">المعلم يفكر...</p>
-                                </div>
-                            )}
-
-                            {!result && !isLoading && (
-                                <div className="text-center opacity-30 select-none">
-                                    <div className="flex justify-center gap-4 mb-4">
-                                        <div className="w-16 h-2 bg-chalk-pink rounded transform rotate-45"></div>
-                                        <div className="w-16 h-2 bg-chalk-blue rounded transform -rotate-12"></div>
-                                        <div className="w-16 h-2 bg-chalk-yellow rounded transform rotate-90"></div>
+                                {/* Goal Selection */}
+                                <div className="mb-6">
+                                    <label className="text-gray-400 text-sm font-bold block mb-3">الهدف</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {[
+                                            {id: 'weightloss', icon: Flame, label: 'تنشيف'},
+                                            {id: 'maintenance', icon: Activity, label: 'لياقة'},
+                                            {id: 'muscle', icon: Dumbbell, label: 'تضخيم'},
+                                        ].map(opt => (
+                                            <button 
+                                                key={opt.id}
+                                                onClick={() => setGoal(opt.id)}
+                                                className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all
+                                                    ${goal === opt.id ? 'bg-neon/10 border-neon text-neon' : 'bg-black border-gray-800 text-gray-500 hover:border-gray-600'}
+                                                `}
+                                            >
+                                                <opt.icon className="w-5 h-5 mb-1" />
+                                                <span className="text-xs font-bold">{opt.label}</span>
+                                            </button>
+                                        ))}
                                     </div>
-                                    <p className="text-chalk-white text-3xl font-chalk">السبورة نظيفة.. اسألني!</p>
+                                </div>
+
+                                {/* Place & Level */}
+                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                    <div>
+                                        <label className="text-gray-400 text-sm font-bold block mb-2">المكان</label>
+                                        <select 
+                                            value={place} onChange={(e) => setPlace(e.target.value)}
+                                            className="w-full bg-black border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-neon text-sm"
+                                        >
+                                            <option value="gym">الجيم (Gym)</option>
+                                            <option value="home">المنزل (Home)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-gray-400 text-sm font-bold block mb-2">المستوى</label>
+                                        <select 
+                                            value={level} onChange={(e) => setLevel(e.target.value)}
+                                            className="w-full bg-black border border-gray-700 text-white p-3 rounded-lg outline-none focus:border-neon text-sm"
+                                        >
+                                            <option value="beginner">مبتدأ</option>
+                                            <option value="intermediate">متوسط</option>
+                                            <option value="advanced">محترف</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Generate Button */}
+                                <button 
+                                    onClick={generatePlan}
+                                    disabled={loading}
+                                    className={`w-full py-4 rounded-xl font-black text-lg uppercase tracking-widest transition-all flex items-center justify-center gap-2
+                                        ${loading ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-neon text-black hover:shadow-neon hover:scale-[1.02]'}
+                                    `}
+                                >
+                                    {loading ? 'جاري التحليل...' : 'اصنع الخطة'} <Zap className={loading ? 'hidden' : 'w-5 h-5 fill-black'} />
+                                </button>
+                            </div>
+
+                            {/* Stats Card (Decoration) */}
+                            <div className="bg-dark-panel border border-dark-border p-4 rounded-2xl flex items-center justify-between opacity-70">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-neon">
+                                        <Scale className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <div className="text-xs text-gray-500">حالة الجسم</div>
+                                        <div className="text-sm font-bold text-white">تحليل مؤشر الكتلة...</div>
+                                    </div>
+                                </div>
+                                <div className="h-8 w-[1px] bg-gray-700"></div>
+                                <div className="text-right">
+                                    <div className="text-xs text-gray-500">النشاط</div>
+                                    <div className="text-neon text-sm font-mono">ACTIVE</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* RESULT PANEL */}
+                        <div className="lg:col-span-8">
+                            
+                            {loading && (
+                                <div className="h-full flex flex-col items-center justify-center space-y-6 bg-dark-panel/50 rounded-2xl border border-dashed border-gray-800 p-12">
+                                    <div className="w-full max-w-sm bg-gray-800 rounded-full h-2 overflow-hidden">
+                                        <div className="bg-neon h-full transition-all duration-300" style={{width: `${progress}%`}}></div>
+                                    </div>
+                                    <p className="text-neon font-mono animate-pulse">GENERATING PLAN_V1.0...</p>
                                 </div>
                             )}
 
-                            {result && !isLoading && (
-                                <div className="w-full animate-write" ref={resultRef}>
+                            {!plan && !loading && (
+                                <div className="h-full flex flex-col items-center justify-center text-center opacity-30 p-12 border-2 border-dashed border-gray-800 rounded-2xl">
+                                    <Dumbbell className="w-24 h-24 mb-4" />
+                                    <h2 className="text-2xl font-bold">بانتظار التعليمات</h2>
+                                    <p>املأ بياناتك واضغط على الزر لتبدأ رحلة التغيير</p>
+                                </div>
+                            )}
+
+                            {plan && !loading && (
+                                <div className="space-y-6 animate-slide-up">
                                     
-                                    {/* Decoration Doodles */}
-                                    <div className="absolute top-0 right-0 text-chalk-yellow opacity-80 transform rotate-12">
-                                        <Sparkles className="w-12 h-12" />
-                                    </div>
-                                    <div className="absolute bottom-0 left-0 text-chalk-pink opacity-80 transform -rotate-12">
-                                        <Smile className="w-12 h-12" />
+                                    {/* Summary & Macros */}
+                                    <div className="grid md:grid-cols-3 gap-4">
+                                        <div className="md:col-span-3 bg-gradient-to-r from-neon/20 to-transparent border-r-4 border-neon p-4 rounded-lg">
+                                            <h3 className="text-neon font-bold text-sm uppercase tracking-wider mb-1">الخطة اليومية</h3>
+                                            <p className="text-xl font-bold text-white">{plan.summary}</p>
+                                        </div>
+                                        
+                                        <div className="bg-dark-panel p-4 rounded-xl border border-dark-border flex flex-col items-center justify-center">
+                                            <Flame className="text-orange-500 w-6 h-6 mb-2" />
+                                            <span className="text-2xl font-mono font-bold text-white">{plan.calories}</span>
+                                            <span className="text-xs text-gray-500 uppercase">سعرة حرارية</span>
+                                        </div>
+                                        
+                                        <div className="bg-dark-panel p-4 rounded-xl border border-dark-border flex flex-col items-center justify-center">
+                                            <Dumbbell className="text-blue-500 w-6 h-6 mb-2" />
+                                            <span className="text-2xl font-mono font-bold text-white">{plan.protein}</span>
+                                            <span className="text-xs text-gray-500 uppercase">بروتين</span>
+                                        </div>
+                                        
+                                        <div className="bg-dark-panel p-4 rounded-xl border border-dark-border flex flex-col items-center justify-center">
+                                            <TrendingUp className="text-neon w-6 h-6 mb-2" />
+                                            <span className="text-2xl font-mono font-bold text-white">100%</span>
+                                            <span className="text-xs text-gray-500 uppercase">قوة</span>
+                                        </div>
                                     </div>
 
-                                    {/* Title */}
-                                    <h2 className="text-4xl font-bold text-chalk-pink mb-6 text-center font-chalk border-b-2 border-white/10 inline-block pb-2 px-8 mx-auto w-full">
-                                        {result.title}
-                                    </h2>
-
-                                    {/* Explanation */}
-                                    <div className="bg-white/5 p-6 rounded-2xl border-2 border-dashed border-white/20 relative mb-8">
-                                        <p className="text-2xl md:text-3xl leading-relaxed text-chalk-white font-chalk text-center">
-                                            {result.simple}
-                                        </p>
+                                    {/* Workout Section */}
+                                    <div className="bg-dark-panel border border-dark-border rounded-2xl overflow-hidden">
+                                        <div className="bg-white/5 p-4 border-b border-white/5 flex justify-between items-center">
+                                            <h3 className="font-bold flex items-center gap-2"><Dumbbell className="text-neon w-5 h-5" /> جدول التمرين</h3>
+                                            <span className="text-xs bg-neon/20 text-neon px-2 py-1 rounded">اليوم الأول</span>
+                                        </div>
+                                        <div className="p-4 space-y-3">
+                                            {plan.workout.map((exercise, idx) => (
+                                                <div key={idx} className="flex items-center justify-between p-3 bg-black/40 rounded-lg hover:bg-white/5 transition-colors group">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center text-gray-400 font-mono text-sm group-hover:text-neon group-hover:border group-hover:border-neon transition-all">
+                                                            {idx + 1}
+                                                        </div>
+                                                        <span className="font-bold text-sm md:text-base">{exercise.name}</span>
+                                                    </div>
+                                                    <span className="text-neon font-mono text-sm">{exercise.reps}</span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
-                                    {/* Analogy Box */}
-                                    <div className="flex flex-col items-center">
-                                        <div className="text-chalk-blue text-sm mb-2 font-bold uppercase tracking-widest">التشبيه السحري</div>
-                                        <div className="bg-chalk-yellow text-board-dark px-6 py-3 rounded-full text-xl font-bold shadow-lg transform -rotate-1 hover:rotate-0 transition-transform cursor-default">
-                                            <span className="mr-2">💡</span> {result.analogy}
+                                    {/* Diet Section */}
+                                    <div className="bg-dark-panel border border-dark-border rounded-2xl overflow-hidden">
+                                        <div className="bg-white/5 p-4 border-b border-white/5 flex justify-between items-center">
+                                            <h3 className="font-bold flex items-center gap-2"><Utensils className="text-orange-500 w-5 h-5" /> النظام الغذائي</h3>
+                                        </div>
+                                        <div className="p-4 grid md:grid-cols-2 gap-4">
+                                            <div className="p-3 bg-black/40 rounded-lg border-r-2 border-yellow-500">
+                                                <div className="text-xs text-gray-500 mb-1">الإفطار</div>
+                                                <div className="font-bold text-sm">{plan.diet.breakfast}</div>
+                                            </div>
+                                            <div className="p-3 bg-black/40 rounded-lg border-r-2 border-green-500">
+                                                <div className="text-xs text-gray-500 mb-1">الغداء</div>
+                                                <div className="font-bold text-sm">{plan.diet.lunch}</div>
+                                            </div>
+                                            <div className="p-3 bg-black/40 rounded-lg border-r-2 border-blue-500">
+                                                <div className="text-xs text-gray-500 mb-1">العشاء</div>
+                                                <div className="font-bold text-sm">{plan.diet.dinner}</div>
+                                            </div>
+                                            <div className="p-3 bg-black/40 rounded-lg border-r-2 border-purple-500">
+                                                <div className="text-xs text-gray-500 mb-1">سناك</div>
+                                                <div className="font-bold text-sm">{plan.diet.snack || "مكسرات أو فاكهة"}</div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -381,19 +452,8 @@
                             )}
 
                         </div>
-
-                        {/* Shelf with Chalks */}
-                        <div className="absolute bottom-0 left-0 right-0 h-4 bg-[#4e342e] rounded-b flex justify-center items-end gap-2 pb-1 px-10 shadow-lg">
-                            <div className="w-20 h-3 bg-white rounded-sm shadow-sm transform -rotate-1"></div>
-                            <div className="w-16 h-3 bg-red-300 rounded-sm shadow-sm transform rotate-2"></div>
-                            <div className="w-12 h-3 bg-blue-300 rounded-sm shadow-sm transform -rotate-3"></div>
-                            <div className="w-24 h-5 bg-gray-800 rounded-sm shadow-md border border-gray-600 mb-1 ml-8 relative">
-                                <div className="absolute inset-0 bg-white opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]"></div>
-                            </div>
-                        </div>
-
                     </div>
-                    
+
                 </div>
             );
         }
