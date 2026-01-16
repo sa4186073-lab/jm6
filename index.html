@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بسطها لي | المعلم الذكي</title>
+    
+    <!-- Fonts: 'Tajawal' (Rounded/Friendly) & 'Amatic SC' (Handwritten style for English) -->
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                        chalk: ['Amatic SC', 'cursive'],
+                    },
+                    colors: {
+                        board: {
+                            green: '#2F4F4F', // Dark Slate Gray
+                            dark: '#1a3c3c',
+                            wood: '#8B4513',
+                            dust: '#ffffff20',
+                        },
+                        chalk: {
+                            white: '#fcfcfc',
+                            yellow: '#f1c40f',
+                            pink: '#e84393',
+                            blue: '#74b9ff',
+                        }
+                    },
+                    backgroundImage: {
+                        'chalk-texture': "url('https://www.transparenttextures.com/patterns/black-chalk.png')",
+                    },
+                    animation: {
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        'dust-float': 'float 10s infinite linear',
+                        'write': 'write 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        float: {
+                            '0%': { transform: 'translateY(0) rotate(0deg)', opacity: 0 },
+                            '50%': { opacity: 0.5 },
+                            '100%': { transform: 'translateY(-100px) rotate(360deg)', opacity: 0 }
+                        },
+                        write: {
+                            '0%': { opacity: 0, width: '0%' },
+                            '100%': { opacity: 1, width: '100%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "react": "https://esm.sh/react@18.2.0",
+                "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+                "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f0e6d2; /* Wall color */
+            background-image: radial-gradient(#dcd0b8 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        /* Realistic Chalkboard Effect */
+        .chalkboard {
+            background-color: #1a3c3c;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            box-shadow: 
+                inset 0 0 20px 0 rgba(0,0,0,0.5),
+                inset 0 0 50px 0 rgba(255,255,255,0.05),
+                0 20px 50px rgba(0,0,0,0.5);
+            border: 16px solid #5d4037;
+            border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='%235d4037'/%3E%3Cpath d='M0 0h100v10H0zM0 90h100v10H0z' fill='%234e342e'/%3E%3C/svg%3E") 30 stretch;
+        }
+
+        .chalk-text {
+            font-family: 'Tajawal', sans-serif;
+            color: #fff;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+            /* Chalk roughness */
+            filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));
+        }
+
+        .eraser-dust {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #1a3c3c; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; border: 2px solid #1a3c3c; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useRef } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { 
+            Lightbulb, Brain, Eraser, Settings, Key, X, 
+            Sparkles, GraduationCap, ArrowRight, Zap, Smile
+        } from 'lucide-react';
+
+        // --- Mock Data (Demo Mode) ---
+        const MOCK_EXPLANATIONS = [
+            {
+                title: "البلوك تشين (Blockchain)",
+                simple: "تخيل أن لدينا دفتر رسم كبير في الفصل، وكل طالب يرسم فيه رسمة. لكن، لا أحد يستطيع مسح رسمة أحد آخر! وكلما رسم طالب شيئاً، يراه الجميع ويوافقون عليه. البلوك تشين هو مثل هذا الدفتر، لكن للكمبيوترات، لكي لا يغش أحد في الأرقام.",
+                analogy: "دفتر الرسم السحري الذي لا يمسح"
+            },
+            {
+                title: "التضخم (Inflation)",
+                simple: "تخيل أن مصروفك اليومي هو 5 ريالات وتشتري به آيس كريم. فجأة، صار الآيس كريم بـ 10 ريالات! مصروفك لم يتغير، لكنك لم تعد تستطيع شراء الآيس كريم. هذا هو التضخم: المال يفقد قوته وتصبح الأشياء أغلى.",
+                analogy: "الآيس كريم الذي يصغر حجمه"
+            }
+        ];
+
+        function App() {
+            // Inputs
+            const [topic, setTopic] = useState('');
+            const [result, setResult] = useState(null);
+            
+            // System
+            const [isLoading, setIsLoading] = useState(false);
+            const [showSettings, setShowSettings] = useState(false);
+            const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
+            const [dustParticles, setDustParticles] = useState([]);
+
+            const resultRef = useRef(null);
+
+            const saveApiKey = (key) => {
+                setApiKey(key);
+                localStorage.setItem('gemini_api_key', key);
+            };
+
+            const triggerDust = () => {
+                const newDust = Array.from({ length: 10 }).map((_, i) => ({
+                    id: Date.now() + i,
+                    left: Math.random() * 100 + '%',
+                    top: Math.random() * 100 + '%',
+                    delay: Math.random() * 2 + 's'
+                }));
+                setDustParticles(newDust);
+                setTimeout(() => setDustParticles([]), 2000);
+            };
+
+            const handleSimplify = async () => {
+                if (!topic.trim()) return;
+                setIsLoading(true);
+                setResult(null);
+                triggerDust();
+
+                // Demo Mode
+                if (!apiKey) {
+                    setTimeout(() => {
+                        const randomRes = MOCK_EXPLANATIONS[Math.floor(Math.random() * MOCK_EXPLANATIONS.length)];
+                        // Just forcing the title to match input for demo feel
+                        setResult({ ...randomRes, title: topic }); 
+                        setIsLoading(false);
+                    }, 2500);
+                    return;
+                }
+
+                // AI Prompt
+                const prompt = `اشرح لي موضوع "${topic}" وكأن عمري 5 سنوات.
+                
+                التعليمات:
+                1. استخدم لغة عربية بسيطة جداً ومرحة.
+                2. استخدم تشبيهات من عالم الأطفال (ألعاب، حلويات، حيوانات، مدرسة).
+                3. كن مختصراً (فقرة واحدة أو اثنتين).
+                4. أعطني "عنوان التشبيه" في النهاية.
+
+                صيغة JSON المطلوبة:
+                {
+                    "title": "${topic}",
+                    "simple": "الشرح المبسط هنا...",
+                    "analogy": "عنوان التشبيه (مثلاً: البنك مثل الحصالة)"
+                }`;
+
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+                    const data = await response.json();
+                    const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
+                    setResult(parsed);
+                } catch (error) {
+                    setResult({
+                        title: topic,
+                        simple: "أعتذر يا صديقي الصغير! الطباشير انكسر ولم أستطع الكتابة. (تأكد من مفتاح API)",
+                        analogy: "القلم المكسور"
+                    });
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const clearBoard = () => {
+                setTopic('');
+                setResult(null);
+                triggerDust();
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
+                    
+                    {/* Settings Modal */}
+                    {showSettings && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+                            <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl relative border-4 border-board-wood transform rotate-1">
+                                <button onClick={() => setShowSettings(false)} className="absolute top-4 left-4 text-gray-400 hover:text-red-500"><X /></button>
+                                <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-board-wood">
+                                    <Key className="w-5 h-5" /> مفتاح المعلم
+                                </h3>
+                                <input 
+                                    type="password" 
+                                    value={apiKey}
+                                    onChange={(e) => saveApiKey(e.target.value)}
+                                    className="w-full bg-gray-100 border-2 border-gray-300 rounded-lg p-3 outline-none focus:border-board-green mb-2 font-mono"
+                                    placeholder="API Key..."
+                                />
+                                <button onClick={() => setShowSettings(false)} className="mt-4 w-full bg-board-green text-white py-2 rounded-lg font-bold hover:bg-board-dark transition-colors">حفظ</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Main Board Container */}
+                    <div className="chalkboard w-full max-w-4xl min-h-[600px] rounded-xl relative p-8 flex flex-col items-center">
+                        
+                        {/* Dust Particles */}
+                        {dustParticles.map(p => (
+                            <div key={p.id} className="eraser-dust w-20 h-20 opacity-20 animate-dust-float" style={{left: p.left, top: p.top}}></div>
+                        ))}
+
+                        {/* Header written on board */}
+                        <div className="w-full flex justify-between items-start mb-8 border-b-2 border-dashed border-white/20 pb-4">
+                            <div>
+                                <h1 className="text-4xl md:text-5xl font-bold text-chalk-white font-chalk tracking-widest transform -rotate-2">
+                                    بسطها لي! <span className="text-chalk-yellow text-6xl">★</span>
+                                </h1>
+                                <p className="text-chalk-blue text-lg mt-2 font-chalk rotate-1 opacity-80">اشرح لي كأن عمري 5 سنوات</p>
+                            </div>
+                            <button onClick={() => setShowSettings(!showSettings)} className="text-white/30 hover:text-white transition-colors">
+                                <Settings className="w-8 h-8" />
+                            </button>
+                        </div>
+
+                        {/* Input Area (Paper pinned to board) */}
+                        <div className="bg-white w-full max-w-2xl p-1 rounded shadow-lg transform rotate-1 mb-8 relative group">
+                            {/* Pin */}
+                            <div className="absolute -top-3 left-1/2 w-4 h-4 rounded-full bg-red-500 shadow-md border border-red-700 z-10"></div>
+                            
+                            <div className="border-2 border-dashed border-gray-300 p-4 rounded bg-[#fffdf0]">
+                                <label className="block text-gray-500 font-bold mb-2 text-sm">ماذا تريد أن تفهم اليوم؟</label>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        value={topic}
+                                        onChange={(e) => setTopic(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSimplify()}
+                                        placeholder="مثلاً: الثقوب السوداء، الأسهم..."
+                                        className="flex-1 bg-transparent text-xl text-gray-800 outline-none placeholder-gray-300 font-bold"
+                                    />
+                                    {topic && (
+                                        <button onClick={() => setTopic('')} className="text-gray-400 hover:text-red-500"><X /></button>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 translate-x-full hidden md:block group-hover:scale-110 transition-transform">
+                                <ArrowRight className="text-chalk-white w-8 h-8 animate-bounce opacity-50" />
+                            </div>
+                        </div>
+
+                        {/* Action Buttons (Chalks/Eraser) */}
+                        <div className="flex gap-4 mb-10">
+                            <button 
+                                onClick={handleSimplify}
+                                disabled={isLoading || !topic}
+                                className={`
+                                    px-8 py-3 rounded-full font-bold text-xl flex items-center gap-2 transform transition-all border-2
+                                    ${isLoading 
+                                        ? 'bg-transparent text-white/50 border-white/20 cursor-wait' 
+                                        : 'bg-chalk-yellow text-board-dark border-transparent hover:-translate-y-1 hover:shadow-[0_10px_0_rgba(0,0,0,0.3)] active:translate-y-0 active:shadow-none'}
+                                `}
+                            >
+                                {isLoading ? <Sparkles className="animate-spin" /> : <Lightbulb className="w-6 h-6" />}
+                                <span>فهمني!</span>
+                            </button>
+
+                            <button 
+                                onClick={clearBoard}
+                                className="px-6 py-3 rounded-md bg-white text-gray-800 font-bold border-b-4 border-gray-300 hover:-translate-y-1 hover:border-gray-400 active:translate-y-0 active:border-gray-300 flex items-center gap-2 transform rotate-2"
+                                title="مسح السبورة"
+                            >
+                                <Eraser className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Result Area (Chalk Drawings) */}
+                        <div className="flex-1 w-full relative min-h-[300px] flex items-center justify-center">
+                            
+                            {isLoading && (
+                                <div className="text-center animate-pulse">
+                                    <Brain className="w-20 h-20 text-chalk-pink mx-auto mb-4 animate-bounce" />
+                                    <p className="text-chalk-white text-2xl font-chalk">المعلم يفكر...</p>
+                                </div>
+                            )}
+
+                            {!result && !isLoading && (
+                                <div className="text-center opacity-30 select-none">
+                                    <div className="flex justify-center gap-4 mb-4">
+                                        <div className="w-16 h-2 bg-chalk-pink rounded transform rotate-45"></div>
+                                        <div className="w-16 h-2 bg-chalk-blue rounded transform -rotate-12"></div>
+                                        <div className="w-16 h-2 bg-chalk-yellow rounded transform rotate-90"></div>
+                                    </div>
+                                    <p className="text-chalk-white text-3xl font-chalk">السبورة نظيفة.. اسألني!</p>
+                                </div>
+                            )}
+
+                            {result && !isLoading && (
+                                <div className="w-full animate-write" ref={resultRef}>
+                                    
+                                    {/* Decoration Doodles */}
+                                    <div className="absolute top-0 right-0 text-chalk-yellow opacity-80 transform rotate-12">
+                                        <Sparkles className="w-12 h-12" />
+                                    </div>
+                                    <div className="absolute bottom-0 left-0 text-chalk-pink opacity-80 transform -rotate-12">
+                                        <Smile className="w-12 h-12" />
+                                    </div>
+
+                                    {/* Title */}
+                                    <h2 className="text-4xl font-bold text-chalk-pink mb-6 text-center font-chalk border-b-2 border-white/10 inline-block pb-2 px-8 mx-auto w-full">
+                                        {result.title}
+                                    </h2>
+
+                                    {/* Explanation */}
+                                    <div className="bg-white/5 p-6 rounded-2xl border-2 border-dashed border-white/20 relative mb-8">
+                                        <p className="text-2xl md:text-3xl leading-relaxed text-chalk-white font-chalk text-center">
+                                            {result.simple}
+                                        </p>
+                                    </div>
+
+                                    {/* Analogy Box */}
+                                    <div className="flex flex-col items-center">
+                                        <div className="text-chalk-blue text-sm mb-2 font-bold uppercase tracking-widest">التشبيه السحري</div>
+                                        <div className="bg-chalk-yellow text-board-dark px-6 py-3 rounded-full text-xl font-bold shadow-lg transform -rotate-1 hover:rotate-0 transition-transform cursor-default">
+                                            <span className="mr-2">💡</span> {result.analogy}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            )}
+
+                        </div>
+
+                        {/* Shelf with Chalks */}
+                        <div className="absolute bottom-0 left-0 right-0 h-4 bg-[#4e342e] rounded-b flex justify-center items-end gap-2 pb-1 px-10 shadow-lg">
+                            <div className="w-20 h-3 bg-white rounded-sm shadow-sm transform -rotate-1"></div>
+                            <div className="w-16 h-3 bg-red-300 rounded-sm shadow-sm transform rotate-2"></div>
+                            <div className="w-12 h-3 bg-blue-300 rounded-sm shadow-sm transform -rotate-3"></div>
+                            <div className="w-24 h-5 bg-gray-800 rounded-sm shadow-md border border-gray-600 mb-1 ml-8 relative">
+                                <div className="absolute inset-0 bg-white opacity-20 bg-[url('https://www.transparenttextures.com/patterns/felt.png')]"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                </div>
+            );
+        }
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
